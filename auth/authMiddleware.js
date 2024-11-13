@@ -23,3 +23,22 @@ exports.verify = (req,res,next) =>{
 
 
 }
+
+exports.admin = (req,res,next) =>{
+    const adminId = 5;
+    if(req.userId){
+        if(req.userId === adminId){
+            next();
+        }
+        else {
+            res.json({
+                msg : "admins only"
+            })
+        }
+    }
+    else {
+        res.status(404).json({
+            msg : 'no token'
+        })
+    }
+}

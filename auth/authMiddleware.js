@@ -25,7 +25,7 @@ exports.verify = (req,res,next) =>{
 }
 
 exports.admin = (req,res,next) =>{
-    const adminId = 5;
+    const adminId = 2;
     if(req.userId){
         if(req.userId === adminId){
             next();

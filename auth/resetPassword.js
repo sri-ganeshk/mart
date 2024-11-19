@@ -4,7 +4,7 @@ const express = require('express')
 const router = express.Router()
 const prisma = new PrismaClient()
 
-router.post('/reset-password/:token',async (req,res)=>{
+exports.resetpass = async (req,res)=>{
     const {token} = req.params
     const {password} = req.body
     try{
@@ -40,5 +40,4 @@ router.post('/reset-password/:token',async (req,res)=>{
             msg : error.message,
         })
     }
-})
-module.exports = router
+}

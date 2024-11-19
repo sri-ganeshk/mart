@@ -4,8 +4,9 @@ const port = 3000
 const{register,login} = require('./auth/authuser')
 const{verify} = require('./auth/authMiddleware')
 const productRoute = require('./routes/productRoutes')
-const forgotRoute= require('./routes/forgotPassword')
-const resetRoute = require('./routes/resetPassword')
+const forgotRoute= require('./auth/forgotPassword')
+const resetRoute = require('./auth/resetPassword')
+
 
 
 
@@ -16,8 +17,8 @@ app.use(express.json());
 app.post('/auth/register',register)
 app.post('/auth/login',login)
 app.use(productRoute)
-app.use('/auth',forgotRoute)
-app.use('/auth',resetRoute)
+app.use('/auth/forgot-password',forgotRoute)
+app.use('/auth/reset-password/:token',resetRoute)
 
 app.get('/protected', verify, (req, res) => {
     res.json({ message: 'This is a protected route', userId: req.userId });

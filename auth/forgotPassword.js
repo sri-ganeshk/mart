@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
     }
 })
 
-router.post('/forgot-password',async (req,res) =>{
+exports.forgetpass = async (req,res) =>{
     const {email} = req.body;
     try{
       const user = await prisma.user.findUnique({
@@ -60,5 +60,4 @@ router.post('/forgot-password',async (req,res) =>{
             error:error.message
         })
     }
-})
-module.exports = router
+  }

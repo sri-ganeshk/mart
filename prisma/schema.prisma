@@ -23,17 +23,107 @@ model User {
   resetPasswordExpires DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  cart Cart[]
+  address Address[]
+  orders Orders[]
+  // favourite Favourite[]
 }
+
+model Orders{
+  id Int @id @default(autoincrement())
+  dateOfDelivery DateTime?
+  orders OrderItems[]
+  order User @relation(fields: [userId],references: [id])
+  userId Int
+  orderStatus OrderStatus
+  orderConformation Boolean @default(false)
+  payment Payments
+  paymentRefrenceId String
+}
+
+
+model OrderItems{
+ id Int @id @default(autoincrement())
+ Quantity Int
+ orders Orders @relation(fields: [orderId],references: [id])
+ orderId Int
+ product Product @relation(fields: [productId],references: [id])
+ productId Int
+}
+
+
+
+model Address{
+  id Int @id @default(autoincrement())
+  doorNumber String
+  streetName String
+  landMark String
+  city String
+  state String
+  pincode Int
+  user User @relation(fields: [userId],references: [id])
+  userId Int
+}
+
+
+model Cart {
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [userId],references: [id])
+  userId Int @unique
+  items CartItems[]
+}
+
+model CartItems{
+  id Int @id @default(autoincrement())
+  cart Cart @relation(fields: [cartId],references: [id])
+  cartId Int
+  product Product @relation(fields: [productId],references: [id])
+  productId Int
+
+}
+
 model Product {
   id     Int      @id @default(autoincrement())
   name   String
   description String
   price Float
-  category String?
   brand  String
   stock    Int
   images   String[]
-  discount Int
+  discount Float
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
   createdAt DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  reviews Review[]
+  cart CartItems[]
+  orderItems OrderItems[]
+}
+
+model Category{
+  id Int @id @default(autoincrement())
+  name String
+  category Product[]
+}
+
+
+model Review{
+  id Int @id @default(autoincrement())
+  comment String
+  rating Float
+  product Product @relation(fields: [productId],references: [id])
+  productId Int
+}
+
+enum Payments {
+  PENDING
+  COD
+  UPI
+  CARDS
+}
+enum OrderStatus {
+  PENDING
+  SHIPPED
+  DELIVERED
+  CANCELLED
 }

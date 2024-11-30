@@ -54,16 +54,27 @@ router.delete("/user/cart/:id", verify, async (req, res) => {
   const { id } = req.params;
   const userId = req.userId;
 
-  const cart = await prisma.cart.findUnique({ where: { userId } });
-
-  const cartItem = await prisma.cartItems.findUnique({where: { id: parseInt(id) } });
-
-  if(cartItem.cartId !== cart.id){
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-
   try {
+    // Find the user's cart
+    const cart = await prisma.cart.findUnique({ where: { userId } });
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    // Find the cart item by ID
+    const cartItem = await prisma.cartItems.findUnique({
+      where: { id: parseInt(id) },
+    });
+    if (!cartItem) {
+      return res.status(404).json({ message: "Cart item not found" });
+    }
+
+    // Check if the item belongs to the user's cart
+    if (cartItem.cartId !== cart.id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // Delete the cart item
     const deletedCartItem = await prisma.cartItems.delete({
       where: { id: parseInt(id) },
     });

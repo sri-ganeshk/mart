@@ -1,7 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const { verify, admin } = require('../auth/authMiddleware');
-const prisma = new (require('@prisma/client').PrismaClient)();
+              
 
 // Create a product
 router.post('/post-products', verify, admin, async (req, res) => {

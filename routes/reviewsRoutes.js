@@ -17,7 +17,20 @@ router.post('/product/:id/review', verify, async (req, res) => {
     if (!product) {
         return res.status(404).json({ error: 'Product not found' });
     }
-    
+    //allow only is the user has bought the product
+    const order = await prisma.orders.findFirst({
+        where: {
+            userId: req.userId,
+            items: {
+                some: {
+                    productId: parseInt(id)
+                }
+            }
+        }
+    });
+    if (!order) {
+        return res.status(401).json({ error: 'You cannot review a product you have not bought' });
+    }
     const newReview = await prisma.review.create({
         data: {
             rating: parseInt(rating),
